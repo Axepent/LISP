@@ -115,11 +115,22 @@ CL-USER> (append T1 (second T1))
                   (list 5))
             tail ))) 
 
+(defun make-my-list-3 ()
+  (let* ((tail (cons 'F nil))
+         (sub2 (cons 4 (cons 'E tail)))
+         (sub3 (cons 5 nil)))
+    (cons 'D (cons sub2 (cons sub3 tail)))))
+
 ;;9) Save list
 (defvar T2)
 (set 'T2 (make-my-list-2))
 
+(defvar T3)
+(set 'T3 (make-my-list-3))
+
 CL-USER> T2
+(D (4 E F) (5) F)
+CL-USER> T3
 (D (4 E F) (5) F)
 ```
 1.	Оголошення функції make-my-list-2 
@@ -133,4 +144,9 @@ CL-USER> T2
 
 (D (4 E F) (5) F), де останній елемент F — той самий об’єкт, що й у підсписку (4 E F)
 
-P.S. щодо NIL на схемі, не певен, чи потрібно їх додавати у список
+1.	Оголошення функції make-my-list-3 
+2.	В блоці let* створюється tail = (F), sub2 = (4 E F), sub3 = (5) (представляють відповідні елементи у списку)
+3.	За допомогою команди cons збирається список із попередньо створених елементів та 'D
+
+Результуючі списки співпадають між собою - (D (4 E F) (5) F)
+
