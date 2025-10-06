@@ -47,21 +47,14 @@
   (and lst (or (eql (car lst) x)
                (my-member x (cdr lst)))))
 
+(defun only-in (x y)
+  (cond
+    ((null x) nil)
+    ((my-member (car x) y) (only-in (cdr x) y))
+    (t (cons (car x) (only-in (cdr x) y)))))
+
 (defun list-set-symmetric-difference (a b)
-  (labels
-      ((only-in-a (x y)
-         (if x
-             (if (my-member (car x) y)
-                 (only-in-a (cdr x) y)
-                 (cons (car x) (only-in-a (cdr x) y)))
-             nil))
-       (only-in-b (y x)
-         (if y
-             (if (my-member (car y) x)
-                 (only-in-b (cdr y) x)
-                 (cons (car y) (only-in-b (cdr y) x)))
-             nil)))
-    (append (only-in-a a b) (only-in-b b a))))
+  (append (only-in a b) (only-in b a)))
 ```
 ### Тестові набори та утиліти
 ```lisp
@@ -116,3 +109,4 @@ All tests finished.
 :OK
 
 ```
+
