@@ -29,15 +29,14 @@
                   (forward-pass (cons b (cddr xs)) (cons a acc) swapped)
                   (forward-pass (cons a (cddr xs)) (cons b acc) t))))))
        (backward-pass (xs)
-         (labels ((bp (ys)
-                    (if (or (null ys) (null (cdr ys)))
-                        (values ys nil)
-                        (multiple-value-bind (rest swapped) (bp (cdr ys))
-                          (let ((a (car ys)) (b (car rest)))
-                            (if (<= a b)
-                                (values (cons a rest) swapped)
-                                (values (cons b (cons a (cdr rest))) t)))))))
-           (bp xs)))
+         (cond
+           ((or (null xs) (null (cdr xs))) (values xs nil))
+           (t
+            (multiple-value-bind (rest swapped) (backward-pass (cdr xs))
+              (let ((a (car xs)) (b (car rest)))
+                (if (<= a b)
+                    (values (cons a rest) swapped)
+                    (values (cons b (cons a (cdr rest))) t)))))))
        (shaker (xs)
          (multiple-value-bind (p1 s1) (forward-pass xs '() nil)
            (if (not s1) p1
@@ -60,24 +59,27 @@
                        (setf changed t)))
                    (setf cur (cdr cur)))
              changed))
-         (pass-backward ()
-           (let ((prev head)
-                 (cur  (and head (cdr head)))
-                 (changed nil))
-             (loop while cur do
-                   (when (< (car cur) (car prev))
-                     (rotatef (car cur) (car prev))
-                     (setf changed t))
-                   (setf prev cur
-                         cur  (cdr cur)))
-             changed)))
-      (loop
-        with any = nil
-        do (setf any (pass-forward))
-           (when any
-             (when (pass-backward)
-               (setf any t)))
-        unless any do (return head)))))
+         (prev-of (node)
+           (let ((p head) (prev nil))
+             (loop while (and p (not (eq p node))) do
+                   (setf prev p
+                         p    (cdr p)))
+             prev))
+         (pass-backward-rtl ()
+           (cond
+             ((or (null head) (null (cdr head))) nil)
+             (t
+              (let ((changed nil)
+                    (right (last head)))
+                (loop while (and right (not (eq right head))) do
+                      (let ((prev (prev-of right)))
+                        (when (> (car prev) (car right))
+                          (rotatef (car prev) (car right))
+                          (setf changed t))
+                        (setf right prev)))
+                changed)))))
+      (loop while (or (pass-forward) (pass-backward-rtl)))
+      head)))
 ```
 
 ### Тестові набори, утиліти та тестування
