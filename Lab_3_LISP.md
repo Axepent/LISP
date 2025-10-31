@@ -65,7 +65,7 @@
                    (setf prev p
                          p    (cdr p)))
              prev))
-         (pass-backward-rtl ()
+         (pass-backward ()
            (cond
              ((or (null head) (null (cdr head))) nil)
              (t
@@ -78,7 +78,7 @@
                           (setf changed t))
                         (setf right prev)))
                 changed)))))
-      (loop while (or (pass-forward) (pass-backward-rtl)))
+      (loop while (or (pass-forward) (pass-backward)))
       head)))
 ```
 
@@ -117,4 +117,5 @@ passed imp: reversed
 passed imp: dups
 passed imp: negatives
 NIL
+
 ```
