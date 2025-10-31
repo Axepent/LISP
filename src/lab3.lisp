@@ -26,7 +26,6 @@
                  (if (not s2) p2 (shaker p2)))))))
     (shaker lst)))
 
-
 (defun shaker-sort-imp (lst)
   (let ((head (copy-list lst)))
     (labels
@@ -60,9 +59,6 @@
                 changed)))))
       (loop while (or (pass-forward) (pass-backward)))
       head)))
-
-
-
 
 (defun check-sort (title fn input expected)
   (format t "~:[FAILED~;passed~] ~a~%"
