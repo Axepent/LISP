@@ -573,8 +573,8 @@ CL-USER> (read-table-from-file
  #<HASH-TABLE :TEST EQ :COUNT 4 {100314E323}>
  #<HASH-TABLE :TEST EQ :COUNT 4 {100314E823}>)
 
+```
 <p align="center">
   <img src="img/lab5.jpg" alt="Створений файл llm-models.csv" width="70%">
 </p>
-```
 
